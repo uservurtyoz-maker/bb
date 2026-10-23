@@ -17,13 +17,15 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Показать файлы репозитория
-        run: ls -la && find . -name "settings.gradle.kts" -not -path "./.git/*"
+      - name: Распаковать архив, если проект лежит в zip
+        run: |
+          if [ -f BlockHelper.zip ]; then unzip -o BlockHelper.zip; fi
+          ls -la
 
       - name: Сборка APK
         run: |
           F=$(find . -name "settings.gradle.kts" -not -path "./.git/*" | head -n 1)
-          if [ -z "$F" ]; then echo "settings.gradle.kts не найден в репозитории"; exit 1; fi
+          if [ -z "$F" ]; then echo "settings.gradle.kts не найден"; exit 1; fi
           cd "$(dirname "$F")"
           gradle assembleDebug --no-daemon
 
